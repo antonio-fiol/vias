@@ -370,7 +370,7 @@ static void i2c_slave_task(void* arg)
         rdlen = 0;
         if ((slave_state.rxptr == 0) && (slave_state.txptr == 0)) {
             // address received from master
-            printf("[SLV_TASK] Address set by master: %d\n", slave_state.rxaddr);
+            printf("[SLV_TASK] Addr: %d\n", slave_state.rxaddr);
         }
         else if (slave_state.status & 0x02) {
             // read transaction, data sent to master
@@ -385,12 +385,12 @@ static void i2c_slave_task(void* arg)
                     data[slave_state.txptr] = 0;
                 }
             }
-            printf("[SLV_TASK] Data sent to master: address=%d, length=%d, overflow=%d\n", slave_state.txaddr, slave_state.txptr, slave_state.txovf);
+            printf("[SLV_TASK] To master: addr=%d, len=%d, ovf=%d\n", slave_state.txaddr, slave_state.txptr, slave_state.txovf);
             if (data) {
                 disp_buf(data, slave_state.txptr);
                 free(data);
             }
-            else printf("  [No data]\n");
+            else printf(" [No data]\n");
         }
         else {
             // write transaction, data received from master
@@ -405,17 +405,17 @@ static void i2c_slave_task(void* arg)
                     data[slave_state.rxptr] = 0;
                 }
             }
-            printf("[SLV_TASK] Data received from master: address=%d, length=%d, overflow=%d\n", slave_state.rxaddr, slave_state.rxptr, slave_state.rxovf);
+            printf("[SLV_TASK] From master: addr=%d, len=%d, ovf=%d\n", slave_state.rxaddr, slave_state.rxptr, slave_state.rxovf);
             if (data) {
                 disp_buf(data, slave_state.rxptr);
                 free(data);
             }
-            else printf("  [No data]\n");
+            else printf(" [No data]\n");
             {
             int ch = slave_state.rxaddr >> 1;
             int base = ch << 1;
             uint8_t data[2];
-            rdlen = i2c_slave_read_buffer(I2C_SLAVE_NUM, data, ch<<1, 2, 200 / portTICK_RATE_MS);
+            rdlen = i2c_slave_read_buffer(I2C_SLAVE_NUM, data, base, 2, 200 / portTICK_RATE_MS);
             if(rdlen==2) {
                uint16_t data16 = (int16_t)(((uint16_t)data[1])<<8 | data[0]);
                switch(base) {
@@ -429,10 +429,10 @@ static void i2c_slave_task(void* arg)
                        reset_digital(ch);
                        break;
                    case CH_OTA:
-                            xSemaphoreTake(print_mux, portMAX_DELAY);
-                            printf("==== OTA ====\n");
-                            xSemaphoreGive(print_mux);
-                            do_ota();
+                       xSemaphoreTake(print_mux, portMAX_DELAY);
+                       printf("==== OTA ====\n");
+                       xSemaphoreGive(print_mux);
+                       do_ota();
                        break;
                    case CH_RESET:
                        xSemaphoreTake(print_mux, portMAX_DELAY);
