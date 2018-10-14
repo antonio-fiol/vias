@@ -26,6 +26,8 @@
 static const char *TAG = "ota";
 extern const uint8_t server_cert_pem_start[] asm("_binary_ca_cert_pem_start");
 extern const uint8_t server_cert_pem_end[] asm("_binary_ca_cert_pem_end");
+extern const uint8_t build_time_start[] asm("_binary_build_time_txt_start");
+extern const uint8_t build_time_end[] asm("_binary_build_time_txt_end");
 
 static httpd_handle_t server = NULL;
 void do_ota();
@@ -331,11 +333,13 @@ void report_address_task(void * pvParameter)
     char url[1024];
     uint8_t chipid[6];
     esp_efuse_mac_get_default(chipid);
-    snprintf(url, sizeof url, "%s?v=2&addr=%02x&val=%d&mac=%02x:%02x:%02x:%02x:%02x:%02x",
-                              CONFIG_REPORT_ADDRESS_URL, report->addr, report->val,
+    snprintf(url, sizeof url, "%s?v=%s&addr=%02x&val=%d&mac=%02x:%02x:%02x:%02x:%02x:%02x",
+                              CONFIG_REPORT_ADDRESS_URL,
+                              build_time_start,
+                              report->addr, report->val,
                               chipid[0], chipid[1], chipid[2], chipid[3], chipid[4], chipid[5]);
     
-    //ESP_LOGI(TAG,url);
+    ESP_LOGI(TAG,"Connecting to %s",url);
 
     esp_http_client_config_t config = {
         .url = url,
