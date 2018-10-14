@@ -413,7 +413,7 @@ extern "C" void ads_task(void *args)
         if(after-before > 15) printf("====TASK[%d] ads_task ticks=%d ====\n", task_idx, after-before);
         if(slave_ready) {
             i2c_slave_write_buffer(I2C_SLAVE_NUM, (uint8_t*)readings,
-                               CH_READINGS_BASE, ADS_CNT*CH_CNT,
+                               CH_READINGS_BASE, ADS_CNT*CH_CNT*2,
                                100 / portTICK_RATE_MS);
             i2c_slave_write_buffer(I2C_SLAVE_NUM, presence,
                                CH_PRESENCE_BASE, THR_CNT,
