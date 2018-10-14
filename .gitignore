@@ -4,3 +4,7 @@ build
 
 sdkconfig
 sdkconfig.old
+
+main/build_time.txt
+nohup.out
+
