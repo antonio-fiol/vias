@@ -331,7 +331,7 @@ void report_address_task(void * pvParameter)
     char url[1024];
     uint8_t chipid[6];
     esp_efuse_mac_get_default(chipid);
-    snprintf(url, sizeof url, "%s?addr=%02x&val=%d&mac=%02x:%02x:%02x:%02x:%02x:%02x",
+    snprintf(url, sizeof url, "%s?v=2&addr=%02x&val=%d&mac=%02x:%02x:%02x:%02x:%02x:%02x",
                               CONFIG_REPORT_ADDRESS_URL, report->addr, report->val,
                               chipid[0], chipid[1], chipid[2], chipid[3], chipid[4], chipid[5]);
     
