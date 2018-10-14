@@ -200,7 +200,7 @@ void set_polarity(int ch, bool neg) {
 }
 void set_duty(int ch, int16_t duty) {
     xSemaphoreTake(print_mux, portMAX_DELAY);
-    printf("==== Ch: %d duty: %d\n", ch, duty);
+    printf("= Ch: %d duty: %d\n", ch, duty);
     xSemaphoreGive(print_mux);
 
     bool neg = (duty<0);
@@ -394,6 +394,7 @@ static void i2c_slave_task(void* arg)
         }
         else {
             // write transaction, data received from master
+            /*
             if (slave_state.rxptr) {
                 data = malloc(slave_state.rxptr+1);
                 if (data) {
@@ -411,6 +412,7 @@ static void i2c_slave_task(void* arg)
                 free(data);
             }
             else printf(" [No data]\n");
+            */
             {
             int ch = slave_state.rxaddr >> 1;
             int base = ch << 1;
