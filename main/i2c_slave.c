@@ -378,11 +378,11 @@ static void i2c_slave_task(void* arg)
                 data = malloc(slave_state.txptr+1);
                 if (data) {
                     rdlen = i2c_slave_read_buffer(I2C_SLAVE_NUM, data, slave_state.txaddr, slave_state.txptr, 200 / portTICK_RATE_MS);
+                    data[slave_state.txptr] = 0;
                     if (rdlen != slave_state.txptr) {
                         free(data);
                         data = NULL;
                     }
-                    data[slave_state.txptr] = 0;
                 }
             }
             printf("[SLV_TASK] To master: addr=%d, len=%d, ovf=%d\n", slave_state.txaddr, slave_state.txptr, slave_state.txovf);
