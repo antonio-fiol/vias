@@ -15,7 +15,7 @@ void initialise_wifi();
 
 SemaphoreHandle_t print_mux = NULL;
 static TaskHandle_t i2c_slave_task_handle = NULL;
-static i2c_slave_state_t slave_state;
+static i2c_slave_state_t global_slave_state;
 
 
     /*
@@ -346,9 +346,10 @@ static void i2c_slave_task(void* arg)
     int notify_res = 0;
     int rdlen;
     uint8_t *data;
+    i2c_slave_state_t slave_state;
 
     printf("[SLV_TASK] Started\n");
-    if (i2c_slave_add_task(I2C_SLAVE_NUM, &i2c_slave_task_handle, &slave_state) != ESP_OK) {
+    if (i2c_slave_add_task(I2C_SLAVE_NUM, &i2c_slave_task_handle, &global_slave_state) != ESP_OK) {
         printf("[SLV_TASK] Error registering slave task\n");
         goto exit;
     }
@@ -366,6 +367,7 @@ static void i2c_slave_task(void* arg)
             break;
         }
 
+        slave_state = global_slave_state;
         data = NULL;
         rdlen = 0;
         if ((slave_state.rxptr == 0) && (slave_state.txptr == 0)) {
